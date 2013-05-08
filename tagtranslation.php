@@ -8,34 +8,26 @@
 
 
 	require_once("functions.php");
-	// including translation file
-	require_once("../".includeLocale($_GET['lang']));
 
-	$lang = $_GET['lang'];
-	$string = $_GET['string'];
+	$tag = $_GET['tag'];
 	$format = $_GET['format'];
 	$callback = $_GET['callback'];
 
+	// include translation file
+	includeLocale($_GET['lang']);
 
-	if ($string)
+
+	if ($tag)
 	{
-		$parts = explode(",", $string);
+		$parts = explode(",", $tag);
 
 		if ($format == "xml")
 		{
-			echo xmlStart("translations");
-			// echo provided languages
-			echo "<langs>";
-			echo $langs[0];
-			for ($i=1; $i<count($langs); $i++)
-				echo ",".$langs[$i];
-			echo "</langs>\n";
-			// echo current translation language
-			echo "<lang>".$_GET['lang']."</lang>";
+			echo xmlStart('translations lang="'.$_GET['lang'].'"');
 			// echo translated strings
 			foreach ($parts as $part)
 			{
-				$part = explode(".", $part);
+				$part = explode("=", $part);
 				$translation = translateKeyValue($part[0], $part[1]);
 				if ($translation)
 					echo "<translation key=\"".$part[0]."\" value=\"".$part[1]."\">".$translation."</translation>\n";
@@ -47,7 +39,7 @@
 			$list = array();
 			foreach ($parts as $part)
 			{
-				$part = explode(".", $part);
+				$part = explode("=", $part);
 				$translation = translateKeyValue($part[0], $part[1]);
 				if ($translation)
 					array_push($list, array(
@@ -62,7 +54,6 @@
 				$langlist .= ",".$langs[$i];
 			$jsonData = json_encode(
 				array(
-					'langs' => $langs,
 					'lang' => $_GET['lang'],
 					'translations' => $list
 				)
@@ -78,7 +69,7 @@
 			header("Content-Type: text/plain; charset=UTF-8");
 			foreach ($parts as $part)
 			{
-				$part = explode(".", $part);
+				$part = explode("=", $part);
 				$translation = translateKeyValue($part[0], $part[1]);
 				if ($translation)
 					echo $translation."\n";
