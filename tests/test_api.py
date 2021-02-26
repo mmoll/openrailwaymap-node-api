@@ -102,3 +102,19 @@ def test_get_facility_by_uicref():
     assert response_body[0]['type'] == 'station'
     assert response_body[0]['operator'] == 'DB Station&Service AG'
     assert response_body[0]['stationcategory'] == '1'
+
+
+def test_get_networklength():
+    response = requests.get(f'{API_BASE_URL}/networklength')
+
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json; charset=utf-8'
+
+    response_body = response.json()
+
+    found_element = {}
+    for element in response_body:
+        if element['operator'] == 'Ilztalbahn GmbH' and element['length'] == 70:
+            found_element = element
+
+    assert found_element == {'operator': 'Ilztalbahn GmbH', 'length': 70}
