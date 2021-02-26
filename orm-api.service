@@ -1,7 +1,7 @@
 [Unit]
 Description=OpenRailwayMap API server
-Requires=postgresql-9.6.service
-After=postgresql-9.6.service
+Requires=postgresql.service
+After=postgresql.service
 
 [Service]
 ExecStart=/usr/bin/node @@API_BASEDIR@@/api.js
