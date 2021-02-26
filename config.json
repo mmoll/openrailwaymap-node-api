@@ -2,6 +2,7 @@
 	"prefix": "openrailwaymap_api",
 	"database": "gis",
 	"username": "openrailwaymap",
+	"password": "gis_password",
 	"host": "localhost",
 	"port": 5432,
 	"maxPoolSize": 30,

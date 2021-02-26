@@ -1,0 +1,82 @@
+name: CI
+
+on: [ push, pull_request ]
+
+jobs:
+  test:
+    services:
+      postgres:
+        image: kartoza/postgis:11.5-2.5
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: openrailwaymap
+          POSTGRES_PASSWORD: gis_password
+          POSTGRES_DB: gis
+          POSTGRES_MULTIPLE_EXTENSIONS: postgis,hstore,postgis_topology
+          DEFAULT_ENCODING: 'UTF8'
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout API repo
+        uses: actions/checkout@v2
+        with:
+          path: api
+      - name: Checkout CartoCSS repo
+        uses: actions/checkout@v2
+        with:
+          repository: OpenRailwayMap/OpenRailwayMap-CartoCSS
+          path: CartoCSS
+      - name: Checkout server-admin repo
+        uses: actions/checkout@v2
+        with:
+          repository: OpenRailwayMap/server-admin
+          path: server-admin
+
+      - name: Install osm2pgsql and postgres-client
+        run: |
+          sudo apt update -qq
+          sudo apt install -yq --no-install-suggests --no-install-recommends osm2pgsql postgresql-client
+        shell: bash
+      - name: put pg passwd
+        run: |
+          echo 'localhost:5432:gis:openrailwaymap:gis_password' >~/.pgpass
+          chmod 0600 ~/.pgpass
+        shell: bash
+      - name: run osm2pgsql
+        run: |
+          osm2pgsql -H localhost -U openrailwaymap -d gis --merc --multi-geometry --hstore --style CartoCSS/setup/openstreetmap-carto.style --tag-transform CartoCSS/setup/openstreetmap-carto.lua --cache 256 --slim api/tests/bayern-railway.osm.pbf
+        shell: bash
+      - name: prepare DB for API
+        run: |
+          psql -h localhost -d gis -U openrailwaymap -p 5432 -a -q -f server-admin/ansible/roles/website/tasks/files/api_views_and_indexes.sql
+        shell: bash
+
+      - name: Install NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '10'
+      - name: Install npm deps
+        working-directory: api
+        run: |
+          npm install
+        shell: bash
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install pip deps
+        run: pip install -r requirements.txt
+        working-directory: api/tests
+
+      - name: Start API service and run tests
+        working-directory: api
+        run: |
+          npm run start &
+          sleep 1
+          cd tests
+          pytest
+        shell: bash
