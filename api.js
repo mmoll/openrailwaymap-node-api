@@ -60,7 +60,6 @@ var connectionDetails =
 	'port': configuration.port,
 	'database': configuration.database,
 	'user': configuration.username,
-	'password': configuration.password,
 	'max': parseInt(configuration.maxPoolSize / cpus),
 	'idleTimeoutMillis': 10000
 };
@@ -68,14 +67,14 @@ var connectionDetails =
 
 pgPass(connectionDetails, function(password)
 {
-	// if (typeof password == 'undefined')
-	// {
-	// 	logger.fatal('PGPASS file cannot be read or no matching line for given connection info found');
-	// 	process.exit(1);
-	// }
-	//
-	// logger.debug('Successfully read password using PGPASS');
-	// connectionDetails['password'] = password;
+	if (typeof password == 'undefined')
+	{
+		logger.fatal('PGPASS file cannot be read or no matching line for given connection info found');
+		process.exit(1);
+	}
+
+	logger.debug('Successfully read password using PGPASS');
+	connectionDetails['password'] = password;
 
 	// response headers
 	var headers = {};
