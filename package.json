@@ -18,7 +18,7 @@
 	},
 	"url": "https://github.com/openrailwaymap/OpenRailwayMap",
 	"homepage": "https://github.com/openrailwaymap/OpenRailwayMap",
-	"license": "GPLv3+",
+	"license": "GPL-3.0-or-later",
 	"bugs": {
 		"email": "info@matheisen.org",
 		"url": "https://github.com/openrailwaymap/OpenRailwayMap/issues"
