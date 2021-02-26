@@ -11,20 +11,16 @@ var log4js = require('log4js');
 log4js.configure(
 {
 	appenders:
-	[
 		{
-			"type": "logLevelFilter",
-			"level": "INFO",
-			"appender":
-			{
-				"type": "console"
-			}
-		}
-	]
+			console:
+				{
+					type: 'stdout',
+					layout: { type: 'basic' }
+				}
+		},
+	categories: { default: { appenders: ['console'], level: 'info' } }
 });
 var logger = log4js.getLogger();
-logger.setLevel('TRACE');
-
 
 // load node.js modules and functions
 var fs = require('graceful-fs');
@@ -34,10 +30,8 @@ configuration = require('./config.json');
 // include necessary modules
 var cluster = require('cluster');
 var os = require('os');
-var assert = require('assert');
 var http = require("http");
 var url = require("url");
-var pg = require('pg');
 var Pool = require('pg-pool');
 var toobusy = require('toobusy-js');
 var pgPass = require('pgpass');
