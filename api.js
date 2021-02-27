@@ -28,7 +28,7 @@ configuration = require('./config.json');
 // include necessary modules
 var cluster = require('cluster');
 var os = require('os');
-var http = require("http");
+var http = require('http2');
 var url = require("url");
 var Pool = require('pg-pool');
 var toobusy = require('toobusy-js');
@@ -41,9 +41,6 @@ networklength = require('./networklength.js');
 
 // number of cpus
 var cpus = os.cpus().length;
-
-// maximum count of concurrent http connections
-http.globalAgent.maxSockets = configuration.maxsockets;
 
 // database connection
 var connectionDetails =
@@ -225,7 +222,7 @@ pgPass(connectionDetails, function(password)
 		{
 			logger.error('Idle database client error: ' + err.message)
 		});
-		http.createServer(onRequest).listen(configuration.apiPort);
+		http.createServer({peerMaxConcurrentStreams: configuration.maxsockets}, onRequest).listen(configuration.apiPort);
 		logger.info('Worker has started.');
 	}
 });
