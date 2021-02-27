@@ -22,8 +22,6 @@ log4js.configure(
 });
 var logger = log4js.getLogger();
 
-// load node.js modules and functions
-var fs = require('graceful-fs');
 // load configuraion file
 configuration = require('./config.json');
 

@@ -24,7 +24,6 @@
 		"url": "https://github.com/openrailwaymap/OpenRailwayMap/issues"
 	},
 	"dependencies": {
-		"graceful-fs": "^4.2.6",
 		"log4js": "^6.3.0",
 		"pg": "^8.5.1",
 		"toobusy-js": "^0.5.1",
