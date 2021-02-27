@@ -38,6 +38,28 @@ def test_get_facility_by_name():
     assert response_body[1]['stationcategory'] is None
 
 
+def test_get_facility_by_name_and_operator():
+    response = requests.get(f'{API_BASE_URL}/facility', params={'name': 'feldmoching', 'operator': 'DB Netz AG'})
+
+    assert response.status_code == 200
+    assert response.headers['Content-Type'] == 'application/json; charset=utf-8'
+
+    response_body = response.json()
+
+    assert len(response_body) == 1
+
+    assert response_body[0]['lat'] == approx(11.541275300000001)
+    assert response_body[0]['lon'] == approx(48.213803599886198)
+    assert response_body[0]['name'] == 'Feldmoching'
+    assert response_body[0]['uicname'] is None
+    assert response_body[0]['uicref'] == '8004147'
+    assert response_body[0]['ref'] == 'MFE'
+    assert response_body[0]['id'] == '2499552238'
+    assert response_body[0]['type'] == 'station'
+    assert response_body[0]['operator'] == 'DB Netz AG'
+    assert response_body[0]['stationcategory'] is None
+
+
 def test_get_facility_by_name_with_spaces():
     response = requests.get(f'{API_BASE_URL}/facility', params={'name': 'fischbach nürnberg'})
 
