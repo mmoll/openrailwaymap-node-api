@@ -72,6 +72,12 @@ jobs:
         run: pip install -r requirements.txt
         working-directory: api/tests
 
+      - name: Install nghttpx as HTTP1 -> HTTP2 proxy
+        run: |
+          sudo apt install -yq --no-install-suggests --no-install-recommends nghttp2-proxy
+          sudo cp api/tests/nghttpx.conf /etc/nghttpx/
+          sudo systemctl restart nghttpx
+        shell: bash
       - name: Start API service and run tests
         working-directory: api
         run: |

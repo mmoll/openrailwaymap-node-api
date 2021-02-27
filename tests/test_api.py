@@ -2,7 +2,7 @@ import requests
 from pytest import approx
 
 
-API_BASE_URL = 'http://localhost:9002'
+API_BASE_URL = 'http://localhost:9003'
 
 
 def test_get_facility_by_name():
