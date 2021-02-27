@@ -22,7 +22,7 @@ log4js.configure(
 });
 var logger = log4js.getLogger();
 
-// load configuraion file
+// load configuration file
 configuration = require('./config.json');
 
 // include necessary modules
@@ -222,7 +222,7 @@ pgPass(connectionDetails, function(password)
 		{
 			logger.error('Idle database client error: ' + err.message)
 		});
-		http.createServer({peerMaxConcurrentStreams: configuration.maxsockets}, onRequest).listen(configuration.apiPort);
+		http.createServer(onRequest).listen(configuration.apiPort);
 		logger.info('Worker has started.');
 	}
 });

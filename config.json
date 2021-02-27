@@ -6,7 +6,6 @@
 	"port": 5432,
 	"maxPoolSize": 30,
 	"geomcolumn": "way",
-	"maxsockets": 100,
 	"apiPort": 9002,
 	"queries": ["milestone", "facility", "networklength"],
 	"corsAllowOrigin": "*"
